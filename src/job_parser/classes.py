@@ -14,6 +14,9 @@ class HH(Engine):
         self._snippet = None
         self._url = None
 
+    def __repr__(self):
+        return f'{self.name}\n{self.salary}\n{self.snippet}\n{self.url}'
+
     @property
     def name(self):
         return self._name
@@ -70,6 +73,9 @@ class Superjob(Engine):
         self._snippet = None
         self._url = None
 
+    def __repr__(self):
+        return f'{self.name}\n{self.salary}\n{self.snippet}\n{self.url}'
+
     @property
     def name(self):
         return self._name
@@ -84,9 +90,6 @@ class Superjob(Engine):
 
     @salary.setter
     def salary(self, value):
-
-        # value = value.replace('до\\xa0', '').replace('\\xa0', '')
-
         self._salary = value
 
     @property
