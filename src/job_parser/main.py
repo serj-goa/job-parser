@@ -1,6 +1,23 @@
 from classes import HH, Superjob
+from parse_superjob import get_parse_superjob
 
 from requests import get
+
+
+def create_vacancies_ojects(vacancies_data):
+
+    obj_vacancies = []
+
+    for cls, vacancies_lst in vacancies_data:
+
+        for vacancies in vacancies_lst:
+
+            cls_obj = cls()
+            cls_obj.get_request(vacancies)
+
+            obj_vacancies.append(cls_obj)
+
+    return obj_vacancies
 
 
 def get_vacancies_by_api(text):
@@ -31,7 +48,7 @@ def get_vacancies_by_api(text):
 
 def show_result(obj_vacancies: []) -> None:
 
-    for obj in obj_vacancies[:5]:
+    for obj in obj_vacancies[:100]:
 
         print(obj.name)
         print(obj.salary)
@@ -45,27 +62,17 @@ def main() -> None:
     print('Введите поисковый запрос')
     search_pattern = input('>>> ').strip()
     hh_vacancies = get_vacancies_by_api(text=search_pattern)
+    sj_vacancies = get_parse_superjob(text=search_pattern)
 
-    obj_vacancies = []
+    all_parse_vacancies = [sj_vacancies, hh_vacancies]
+    all_cls = [Superjob, HH]
 
-    for vacancies in hh_vacancies:
+    vacancies_data = zip(all_cls, all_parse_vacancies)
 
-        hh = HH()
-        hh.get_request(vacancies)
-
-        obj_vacancies.append(hh)
-
+    obj_vacancies = create_vacancies_ojects(vacancies_data)
 
     show_result(obj_vacancies)
 
 
 if __name__ == '__main__':
     main()
-
-
-"""
-'name' - название вакансии (str)
-'alternate_url' - ссылка на вакансию (str)
-'salary' - зарплата (dict) - salary['from']
-'snippet' - описание (dict)
-"""

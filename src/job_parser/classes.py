@@ -64,5 +64,50 @@ class HH(Engine):
 
 
 class Superjob(Engine):
+    def __init__(self):
+        self._name = None
+        self._salary = None
+        self._snippet = None
+        self._url = None
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def salary(self):
+        return self._salary
+
+    @salary.setter
+    def salary(self, value):
+
+        # value = value.replace('до\\xa0', '').replace('\\xa0', '')
+
+        self._salary = value
+
+    @property
+    def snippet(self):
+        return self._snippet
+
+    @snippet.setter
+    def snippet(self, value):
+        self._snippet = value
+
+    @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, value):
+        self._url = value
+
     def get_request(self, values):
-        pass
+
+        self.name = values['name']
+        self.salary = values['salary']
+        self.snippet = values['snippet']
+        self.url = values['url']
