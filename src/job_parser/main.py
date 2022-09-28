@@ -1,3 +1,5 @@
+from classes import HH, Superjob
+
 from requests import get
 
 
@@ -27,11 +29,34 @@ def get_vacancies_by_api(text):
     return all_vacancies
 
 
-def main():
+def show_result(obj_vacancies: []) -> None:
+
+    for obj in obj_vacancies[:5]:
+
+        print(obj.name)
+        print(obj.salary)
+        print(obj.snippet)
+        print(obj.url)
+        print()
+
+
+def main() -> None:
 
     print('Введите поисковый запрос')
     search_pattern = input('>>> ').strip()
     hh_vacancies = get_vacancies_by_api(text=search_pattern)
+
+    obj_vacancies = []
+
+    for vacancies in hh_vacancies:
+
+        hh = HH()
+        hh.get_request(vacancies)
+
+        obj_vacancies.append(hh)
+
+
+    show_result(obj_vacancies)
 
 
 if __name__ == '__main__':
