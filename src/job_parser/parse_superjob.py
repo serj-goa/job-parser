@@ -6,7 +6,6 @@ from requests import get
 user_agent = UserAgent()
 
 def get_page_count(kw):
-    print('Start')
 
     data = get(
         url = f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page=1',
