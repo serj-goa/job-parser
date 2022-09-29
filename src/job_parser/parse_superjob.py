@@ -69,19 +69,15 @@ def get_vacancies_data(links: list) -> list:
 
         vacancies = soup.find_all('span', attrs={'class': '_9fIP1 _249GZ _1jb_5 QLdOc'})
         salaries = soup.find_all('span', attrs={'class': '_2eYAG _1nqY_ _249GZ _1jb_5 _1dIgi'})
-        snippets = soup.find_all('span', attrs={'class': '_1Nj4W _249GZ _1jb_5 _1dIgi _3qTky'})
+        snippets = soup.find_all('div', attrs={'class': '_2d_Of _2J-3z _3B5DQ'})
 
         for i in range(len(vacancies)):
-            try:
-                snippet = snippets[i].text
-            except:
-                snippet = 'Нет данных'
 
             vacancie_info = {
                 'name': vacancies[i].text,
                 'url': f'https://russia.superjob.ru{vacancies[i].a["href"]}',
                 'salary': salaries[i].text,
-                'snippet': snippet
+                'snippet': snippets[i].text
             }
 
             all_vacancies.append(vacancie_info)
