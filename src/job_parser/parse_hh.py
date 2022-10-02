@@ -1,7 +1,13 @@
 from requests import get
+from typing import List
 
 
-def get_vacancies_by_api(text):
+def get_vacancies_by_api(text: str) -> List[dict]:
+    """
+    Gets the user's keyword, a list of dictionaries for each vacancy.
+    :param text: str
+    :return: List[dict]
+    """
 
     all_vacancies = []
 

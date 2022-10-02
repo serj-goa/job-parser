@@ -1,7 +1,14 @@
 from classes import HH, Superjob
 
+from typing import List
 
-def create_vacancies_ojects(vacancies_data):
+
+def create_vacancies_objects(vacancies_data: zip) -> List[HH | Superjob]:
+    """
+    Creates a list of objects for each vacancy.
+    :param vacancies_data: list
+    :return: List[HH | Superjob]
+    """
 
     obj_vacancies = []
 
@@ -17,7 +24,12 @@ def create_vacancies_ojects(vacancies_data):
     return obj_vacancies
 
 
-def show_result(obj_vacancies: []) -> None:
+def show_result(obj_vacancies: List[HH | Superjob]) -> None:
+    """
+    Displays the results of parsing vacancies to the user's screen.
+    :param obj_vacancies: List[HH | Superjob]
+    :return: None
+    """
     print()
 
     for obj in obj_vacancies[:100]:

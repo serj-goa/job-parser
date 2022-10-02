@@ -1,19 +1,26 @@
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from requests import get
+from typing import List
 
 
 user_agent = UserAgent()
 
-def get_page_count(kw):
+
+def get_page_count(kw: str) -> int:
+    """
+    Gets the number of pages of jobs found.
+    :param kw: str
+    :return: int
+    """
 
     data = get(
-        url = f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page=1',
-        headers = {'user-agent': user_agent.random}
+        url=f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page=1',
+        headers={'user-agent': user_agent.random}
     )
 
     if data.status_code != 200:
-        return 'Your have a problem! (data.status_code)'
+        print('Your have a problem! (data.status_code)')
 
     soup = BeautifulSoup(data.content, 'lxml')
 
@@ -24,12 +31,17 @@ def get_page_count(kw):
         page_count = 1
 
     except Exception as error:
-        return f'Your have a problem! (page_count = int())\n{error}'
+        print(f'Your have a problem! (page_count = int())\n{error}')
 
     return page_count
 
 
-def get_parse_superjob(text) -> list:
+def get_parse_superjob(text: str) -> List[dict]:
+    """
+    Gets the user's keyword, a list of dictionaries for each vacancy.
+    :param text: str
+    :return: List[dict]
+    """
 
     page_count = get_page_count(kw=text)
     all_requests = get_requests(kw=text, page_count=page_count)
@@ -38,7 +50,13 @@ def get_parse_superjob(text) -> list:
     return vacancies_data
 
 
-def get_requests(kw, page_count) -> list:
+def get_requests(kw: str, page_count: int) -> list:
+    """
+    Gets all pages with found vacancies.
+    :param kw: str
+    :param page_count: int
+    :return: list
+    """
     all_requests = []
 
     for page in range(1, page_count + 1):
@@ -60,7 +78,12 @@ def get_requests(kw, page_count) -> list:
     return all_requests
 
 
-def get_vacancies_data(links: list) -> list:
+def get_vacancies_data(links: List) -> List[dict]:
+    """
+    Gets data on vacancies.
+    :param links: List
+    :return: List[dict]
+    """
 
     all_vacancies = []
 
