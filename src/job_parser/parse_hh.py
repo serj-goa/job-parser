@@ -1,7 +1,12 @@
 from classes import HH
 
 
-def get_vacancies_by_api(text):
+def get_vacancies_by_api(text: str) -> list:
+    """
+    Gets data on vacancies.
+    :param text: str
+    :return: list
+    """
 
     hh = HH(user_text=text, url_api='https://api.hh.ru/vacancies')
     all_vacancies = []
@@ -11,7 +16,6 @@ def get_vacancies_by_api(text):
         vacancies_items = hh.get_request(page_number=i).json()['items']
 
         for data in vacancies_items:
-
             salary = sanitize_salary(data['salary'])
             snippet = sanitize_snippet(data['snippet'])
 
@@ -26,7 +30,12 @@ def get_vacancies_by_api(text):
     return all_vacancies
 
 
-def sanitize_salary(data: dict or None) -> int:
+def sanitize_salary(data: dict) -> int:
+    """
+    Clears data from a field salary.
+    param data: dict or None
+    :return: int
+    """
 
     if data is None:
         salary = 0
@@ -37,7 +46,12 @@ def sanitize_salary(data: dict or None) -> int:
     return salary
 
 
-def sanitize_snippet(data: dict or None) -> int:
+def sanitize_snippet(data: dict) -> int:
+    """
+    Clears data from a field snippet.
+    param data: dict or None
+    :return: int
+    """
 
     snippet = data['requirement']
 

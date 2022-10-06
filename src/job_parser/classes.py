@@ -10,6 +10,9 @@ class Engine(ABC):
 
 
 class HH(Engine):
+    """
+    Works with requests for HadHunter.
+    """
     def __init__(self, user_text, url_api):
         self.user_text = user_text
         self.per_page = 100
@@ -27,6 +30,9 @@ class HH(Engine):
 
 
 class Superjob(Engine):
+    """
+    Works with requests for Superjob.
+    """
     def __init__(self, user_text, url):
         self.user_text = user_text
         self.url = url
@@ -42,6 +48,9 @@ class Superjob(Engine):
 
 
 class Vacancy:
+    """
+    Keeps a vacancy card.
+    """
     def __init__(self):
         self.name = None
         self.salary = None
