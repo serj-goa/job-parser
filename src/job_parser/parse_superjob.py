@@ -1,7 +1,8 @@
+from classes import Superjob
+
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from re import sub
-from requests import get
 
 
 user_agent = UserAgent()
@@ -9,10 +10,8 @@ user_agent = UserAgent()
 
 def get_page_count(kw):
 
-    data = get(
-        url=f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page=1',
-        headers={'user-agent': user_agent.random}
-    )
+    sj = Superjob(user_text=kw, url='https://russia.superjob.ru/vacancy/search/?')
+    data = sj.get_request(page_number=1)
 
     if data.status_code != 200:
         return 'Your have a problem! (data.status_code)'
@@ -20,7 +19,9 @@ def get_page_count(kw):
     soup = BeautifulSoup(data.content, 'lxml')
 
     try:
-        page_count = int(soup.find('div', attrs={'class': '_8zbxf _9mI07 _1R63t _1D2vG _3YVWE b6N4- _19n5p'}).find_all('a', recursive=False)[-2].find('span').find('span').find('span').text)
+        page_count = int(
+            soup.find('div', attrs={'class': '_8zbxf _9mI07 _1R63t _1D2vG _3YVWE b6N4- _19n5p'})
+            .find_all('a', recursive=False)[-2].find('span').find('span').find('span').text)
 
     except AttributeError:
         page_count = 1
@@ -41,15 +42,14 @@ def get_parse_superjob(text) -> list:
 
 
 def get_requests(kw, page_count) -> list:
+
     all_requests = []
+    sj = Superjob(user_text=kw, url='https://russia.superjob.ru/vacancy/search/?')
 
     for page in range(1, page_count + 1):
 
         try:
-            data = get(
-                url=f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page={page}',
-                headers={'user-agent': user_agent.random}
-            )
+            data = sj.get_request(page_number=page)
 
         except Exception as error:
             print(f'for page in range() error\n{error}')

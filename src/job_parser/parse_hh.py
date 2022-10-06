@@ -1,19 +1,14 @@
-from requests import get
+from classes import HH
 
 
 def get_vacancies_by_api(text):
 
+    hh = HH(user_text=text, url_api='https://api.hh.ru/vacancies')
     all_vacancies = []
 
     for i in range(1, 7):
 
-        params = {
-            'text': text,
-            'per_page': 100,
-            'page': i
-        }
-
-        vacancies_items = get('https://api.hh.ru/vacancies', params=params).json()['items']
+        vacancies_items = hh.get_request(page_number=i).json()['items']
 
         for data in vacancies_items:
 
