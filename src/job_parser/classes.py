@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from fake_useragent import UserAgent
+from requests import get
 
 
 class Engine(ABC):
@@ -8,107 +10,48 @@ class Engine(ABC):
 
 
 class HH(Engine):
-    def __init__(self):
-        self._name = None
-        self._salary = None
-        self._snippet = None
-        self._url = None
+    def __init__(self, user_text, url_api):
+        self.user_text = user_text
+        self.per_page = 100
+        self.url_api = url_api
 
-    def __repr__(self):
-        return f'{self.name}\n{self.salary}\n{self.snippet}\n{self.url}'
+    def get_request(self, page_number):
 
-    @property
-    def name(self):
-        return self._name
+        params = {
+            'text': self.user_text,
+            'per_page': self.per_page,
+            'page': page_number
+        }
 
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @property
-    def salary(self):
-        return self._salary
-
-    @salary.setter
-    def salary(self, value):
-        self._salary = value['from'] if value else 'ЗП не указана'
-
-    @property
-    def snippet(self):
-        return self._snippet
-
-    @snippet.setter
-    def snippet(self, value):
-
-        snippet = value['requirement']
-
-        if snippet is None:
-            snippet = 'нет данных'
-
-        else:
-            snippet = snippet.replace('<highlighttext>', '').replace('</highlighttext>', '')
-
-        self._snippet = snippet
-
-    @property
-    def url(self):
-        return self._url
-
-    @url.setter
-    def url(self, value):
-        self._url = value
-
-    def get_request(self, values):
-
-        self.name = values['name']
-        self.salary = values['salary']
-        self.snippet = values['snippet']
-        self.url = values['url']
+        return get(self.url_api, params=params)
 
 
 class Superjob(Engine):
+    def __init__(self, user_text, url):
+        self.user_text = user_text
+        self.url = url
+
+    def get_request(self, page_number):
+
+        user_agent = UserAgent()
+
+        return get(
+            url=f'{self.url}keywords={self.user_text}&page={page_number}',
+            headers={'user-agent': user_agent.random}
+        )
+
+
+class Vacancy:
     def __init__(self):
-        self._name = None
-        self._salary = None
-        self._snippet = None
-        self._url = None
+        self.name = None
+        self.salary = None
+        self.snippet = None
+        self.url = None
 
     def __repr__(self):
         return f'{self.name}\n{self.salary}\n{self.snippet}\n{self.url}'
 
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @property
-    def salary(self):
-        return self._salary
-
-    @salary.setter
-    def salary(self, value):
-        self._salary = value
-
-    @property
-    def snippet(self):
-        return self._snippet
-
-    @snippet.setter
-    def snippet(self, value):
-        self._snippet = value
-
-    @property
-    def url(self):
-        return self._url
-
-    @url.setter
-    def url(self, value):
-        self._url = value
-
-    def get_request(self, values):
+    def create_vacancy(self, values):
 
         self.name = values['name']
         self.salary = values['salary']

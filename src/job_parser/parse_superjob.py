@@ -1,16 +1,17 @@
+from classes import Superjob
+
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-from requests import get
+from re import sub
 
 
 user_agent = UserAgent()
 
+
 def get_page_count(kw):
 
-    data = get(
-        url = f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page=1',
-        headers = {'user-agent': user_agent.random}
-    )
+    sj = Superjob(user_text=kw, url='https://russia.superjob.ru/vacancy/search/?')
+    data = sj.get_request(page_number=1)
 
     if data.status_code != 200:
         return 'Your have a problem! (data.status_code)'
@@ -18,7 +19,9 @@ def get_page_count(kw):
     soup = BeautifulSoup(data.content, 'lxml')
 
     try:
-        page_count = int(soup.find('div', attrs={'class': '_8zbxf _9mI07 _1R63t _1D2vG _3YVWE b6N4- _19n5p'}).find_all('a', recursive=False)[-2].find('span').find('span').find('span').text)
+        page_count = int(
+            soup.find('div', attrs={'class': '_8zbxf _9mI07 _1R63t _1D2vG _3YVWE b6N4- _19n5p'})
+            .find_all('a', recursive=False)[-2].find('span').find('span').find('span').text)
 
     except AttributeError:
         page_count = 1
@@ -39,15 +42,14 @@ def get_parse_superjob(text) -> list:
 
 
 def get_requests(kw, page_count) -> list:
+
     all_requests = []
+    sj = Superjob(user_text=kw, url='https://russia.superjob.ru/vacancy/search/?')
 
     for page in range(1, page_count + 1):
 
         try:
-            data = get(
-                url=f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page={page}',
-                headers={'user-agent': user_agent.random}
-            )
+            data = sj.get_request(page_number=page)
 
         except Exception as error:
             print(f'for page in range() error\n{error}')
@@ -73,13 +75,26 @@ def get_vacancies_data(links: list) -> list:
 
         for i in range(len(vacancies)):
 
-            vacancie_info = {
+            salary = sanitize_salary(salaries[i].text)
+
+            vacancy_info = {
                 'name': vacancies[i].text,
                 'url': f'https://russia.superjob.ru{vacancies[i].a["href"]}',
-                'salary': salaries[i].text,
+                'salary': salary,
                 'snippet': snippets[i].text
             }
 
-            all_vacancies.append(vacancie_info)
+            all_vacancies.append(vacancy_info)
 
     return all_vacancies
+
+
+def sanitize_salary(salary):
+    salary = sub(r"от | | до|до |руб.", "", salary)
+
+    if salary == "По договорённости":
+        salary = '0'
+    elif '—' in salary:
+        salary = sub(r"—\d+", "", salary)
+
+    return int(salary)
