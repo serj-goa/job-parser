@@ -1,7 +1,7 @@
 from classes import HH, Superjob
 
 
-def create_vacancies_ojects(vacancies_data):
+def create_vacancies_objects(vacancies_data):
 
     obj_vacancies = []
 
@@ -17,7 +17,13 @@ def create_vacancies_ojects(vacancies_data):
     return obj_vacancies
 
 
-def show_result(obj_vacancies: []) -> None:
+def save_vacancies(obj_vacancies: list) -> None:
+    with open('vacancies.txt', 'w', encoding='utf-8') as fd:
+        for vacancy in obj_vacancies:
+            fd.write(f'{vacancy}\n\n')
+
+
+def show_result(obj_vacancies: list) -> None:
     print()
 
     for obj in obj_vacancies[:100]:
