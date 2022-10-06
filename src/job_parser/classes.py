@@ -31,7 +31,7 @@ class HH(Engine):
 
     @salary.setter
     def salary(self, value):
-        self._salary = value['from'] if value else 'ЗП не указана'
+        self._salary = value
 
     @property
     def snippet(self):
@@ -39,16 +39,7 @@ class HH(Engine):
 
     @snippet.setter
     def snippet(self, value):
-
-        snippet = value['requirement']
-
-        if snippet is None:
-            snippet = 'нет данных'
-
-        else:
-            snippet = snippet.replace('<highlighttext>', '').replace('</highlighttext>', '')
-
-        self._snippet = snippet
+        self._snippet = value
 
     @property
     def url(self):

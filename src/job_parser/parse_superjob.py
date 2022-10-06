@@ -1,15 +1,17 @@
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from re import sub
 from requests import get
 
 
 user_agent = UserAgent()
 
+
 def get_page_count(kw):
 
     data = get(
-        url = f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page=1',
-        headers = {'user-agent': user_agent.random}
+        url=f'https://russia.superjob.ru/vacancy/search/?keywords={kw}&page=1',
+        headers={'user-agent': user_agent.random}
     )
 
     if data.status_code != 200:
@@ -73,13 +75,26 @@ def get_vacancies_data(links: list) -> list:
 
         for i in range(len(vacancies)):
 
-            vacancie_info = {
+            salary = sanitize_salary(salaries[i].text)
+
+            vacancy_info = {
                 'name': vacancies[i].text,
                 'url': f'https://russia.superjob.ru{vacancies[i].a["href"]}',
-                'salary': salaries[i].text,
+                'salary': salary,
                 'snippet': snippets[i].text
             }
 
-            all_vacancies.append(vacancie_info)
+            all_vacancies.append(vacancy_info)
 
     return all_vacancies
+
+
+def sanitize_salary(salary):
+    salary = sub(r"от | | до|до |руб.", "", salary)
+
+    if salary == "По договорённости":
+        salary = '0'
+    elif '—' in salary:
+        salary = sub(r"—\d+", "", salary)
+
+    return int(salary)

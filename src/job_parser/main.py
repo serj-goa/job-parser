@@ -1,7 +1,7 @@
 from classes import HH, Superjob
 from parse_hh import get_vacancies_by_api
 from parse_superjob import get_parse_superjob
-from utils import create_vacancies_ojects, show_result
+from utils import create_vacancies_objects, save_vacancies, show_result
 
 
 def main() -> None:
@@ -17,9 +17,10 @@ def main() -> None:
 
     vacancies_data = zip(all_cls, all_parse_vacancies)
 
-    obj_vacancies = create_vacancies_ojects(vacancies_data)
+    obj_vacancies = create_vacancies_objects(vacancies_data)
 
     show_result(obj_vacancies)
+    save_vacancies(obj_vacancies)
 
 
 if __name__ == '__main__':
