@@ -8,13 +8,18 @@ from re import sub
 user_agent = UserAgent()
 
 
-def get_page_count(kw):
+def get_page_count(kw: str) -> int:
+    """
+    Gets the number of pages for all found vacancies.
+    :param kw: str
+    :return: int
+    """
 
     sj = Superjob(user_text=kw, url='https://russia.superjob.ru/vacancy/search/?')
     data = sj.get_request(page_number=1)
 
     if data.status_code != 200:
-        return 'Your have a problem! (data.status_code)'
+        print('Your have a problem!')
 
     soup = BeautifulSoup(data.content, 'lxml')
 
@@ -27,12 +32,17 @@ def get_page_count(kw):
         page_count = 1
 
     except Exception as error:
-        return f'Your have a problem! (page_count = int())\n{error}'
+        print(f'Your have a problem!\n{error}')
 
     return page_count
 
 
-def get_parse_superjob(text) -> list:
+def get_parse_superjob(text: str) -> list:
+    """
+    Gets a list of all jobs for the specified keyword.
+    :param text: str
+    :return: list
+    """
 
     page_count = get_page_count(kw=text)
     all_requests = get_requests(kw=text, page_count=page_count)
@@ -42,6 +52,12 @@ def get_parse_superjob(text) -> list:
 
 
 def get_requests(kw, page_count) -> list:
+    """
+    Gets a list of all pages with found vacancies.
+    :param kw: str
+    :param page_count: int
+    :return: list
+    """
 
     all_requests = []
     sj = Superjob(user_text=kw, url='https://russia.superjob.ru/vacancy/search/?')
@@ -63,6 +79,11 @@ def get_requests(kw, page_count) -> list:
 
 
 def get_vacancies_data(links: list) -> list:
+    """
+    Gets data on vacancies.
+    :param links: list
+    :return: list
+    """
 
     all_vacancies = []
 
@@ -89,7 +110,12 @@ def get_vacancies_data(links: list) -> list:
     return all_vacancies
 
 
-def sanitize_salary(salary):
+def sanitize_salary(salary: str) -> int:
+    """
+    Clears data from a field salary.
+    param data: str
+    :return: int
+    """
     salary = sub(r"от | | до|до |руб.", "", salary)
 
     if salary == "По договорённости":
