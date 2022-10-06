@@ -1,18 +1,16 @@
-from classes import HH, Superjob
+from classes import Vacancy
 
 
 def create_vacancies_objects(vacancies_data):
 
     obj_vacancies = []
 
-    for cls, vacancies_lst in vacancies_data:
+    for vacancies in vacancies_data:
 
-        for vacancies in vacancies_lst:
+        vacancy = Vacancy()
+        vacancy.create_vacancy(vacancies)
 
-            cls_obj = cls()
-            cls_obj.get_request(vacancies)
-
-            obj_vacancies.append(cls_obj)
+        obj_vacancies.append(vacancy)
 
     return obj_vacancies
 
